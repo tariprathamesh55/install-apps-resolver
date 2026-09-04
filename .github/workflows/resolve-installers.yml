@@ -49,10 +49,10 @@ jobs:
             local result=""
             result=$("$@" 2>/dev/null) || true
             if [[ "$result" =~ ^https?:// ]]; then
-              echo "::notice::[$app_name] resolved -> $result"
+              echo "::notice::[$app_name] resolved -> $result" >&2
               echo "$result"
             else
-              echo "::warning::[$app_name] could not be resolved (page/URL likely changed) — skipping, will use empty URL"
+              echo "::warning::[$app_name] could not be resolved (page/URL likely changed) — skipping, will use empty URL" >&2
               echo ""
             fi
           }
@@ -130,4 +130,3 @@ jobs:
 
           echo "::error::Failed to push after 5 attempts."
           exit 1
-          
