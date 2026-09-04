@@ -122,5 +122,21 @@ jobs:
           git config user.name "installer-resolver-bot"
           git config user.email "installer-resolver-bot@users.noreply.github.com"
           git add installers.json
-          git diff --cached --quiet && echo "No changes to commit" || git commit -m "Update resolved installer URLs [skip ci]"
-          git push
+          git diff --cached --quiet && { echo "No changes to commit"; exit 0; }
+          git commit -m "Update resolved installer URLs [skip ci]"
+
+          # Another concurrent run may have pushed in between our checkout and this
+          # push — rebase onto latest and retry a few times before giving up.
+          for i in 1 2 3 4 5; do
+            if git push; then
+              echo "Pushed successfully."
+              exit 0
+            fi
+            echo "Push rejected (attempt $i) — fetching and rebasing..."
+            git fetch origin main
+            git rebase origin/main
+          done
+
+          echo "::error::Failed to push after 5 attempts."
+          exit 1
+          
