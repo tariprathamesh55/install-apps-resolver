@@ -62,20 +62,11 @@ jobs:
 
           URLS[VLC]=$(safe_resolve "VLC" resolve_static "https://download.videolan.org/pub/videolan/vlc/last/win64/vlc-win64.exe")
 
-          URLS[WinRAR]=$(safe_resolve "WinRAR" resolve_scrape "https://www.rarlab.com/download.htm" 'https://www\.rarlab\.com/rar/winrar-x64-[0-9a-z]+\.exe')
+          URLS[WinRAR]=$(safe_resolve "WinRAR" resolve_scrape "https://www.win-rar.com/download.html?L=0" 'https://www\.win-rar\.com/fileadmin/winrar-versions/(?:winrar/)?winrar-x64-[0-9]+\.exe')
 
           URLS[FreeDownloadManager]=$(safe_resolve "FreeDownloadManager" resolve_redirect "https://www.freedownloadmanager.org/download-fdm.htm")
 
-          # 7-Zip's download page uses relative links (e.g. href="7z2301-x64.exe") — needs a
-          # two-step extract, so it isn't a plain safe_resolve one-liner. Wrapped by hand below.
-          SEVENZIP_REL=$(curl -sf --max-time 15 "https://www.7-zip.org/download.html" | grep -oP 'href="\K7z[0-9]+-x64\.exe(?=")' | head -n1) || true
-          if [[ -n "$SEVENZIP_REL" ]]; then
-            URLS[7Zip]="https://www.7-zip.org/$SEVENZIP_REL"
-            echo "::notice::[7Zip] resolved -> ${URLS[7Zip]}"
-          else
-            URLS[7Zip]=""
-            echo "::warning::[7Zip] could not be resolved (page/URL likely changed) — skipping, will use empty URL"
-          fi
+          URLS[7Zip]=$(safe_resolve "7Zip" resolve_github "ip7z/7zip" '7z[0-9]+-x64\.exe$')
 
           URLS[Chrome]=$(safe_resolve "Chrome" resolve_static "https://dl.google.com/chrome/install/latest/chrome_installer.exe")
 
