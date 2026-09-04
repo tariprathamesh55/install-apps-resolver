@@ -1,24 +1,14 @@
 {
-  "FreeDownloadManager": "::notice::[FreeDownloadManager] resolved -> https://www.freedownloadmanager.org/download-fdm.htm
-https://www.freedownloadmanager.org/download-fdm.htm",
-  "PowerShell": "::notice::[PowerShell] resolved -> https://github.com/PowerShell/PowerShell/releases/download/v7.6.5/PowerShell-7.6.5-win-x64.msi
-https://github.com/PowerShell/PowerShell/releases/download/v7.6.5/PowerShell-7.6.5-win-x64.msi",
-  "7Zip": "::notice::[7Zip] resolved -> https://github.com/ip7z/7zip/releases/download/26.03/7z2603-x64.exe
-https://github.com/ip7z/7zip/releases/download/26.03/7z2603-x64.exe",
-  "WinRAR": "::warning::[WinRAR] could not be resolved (page/URL likely changed) — skipping, will use empty URL",
-  "Firefox": "::notice::[Firefox] resolved -> https://download-installer.cdn.mozilla.net/pub/firefox/releases/155.0.1/win64/en-US/Firefox%20Setup%20155.0.1.exe
-https://download-installer.cdn.mozilla.net/pub/firefox/releases/155.0.1/win64/en-US/Firefox%20Setup%20155.0.1.exe",
-  "VLC": "::notice::[VLC] resolved -> https://download.videolan.org/pub/videolan/vlc/last/win64/vlc-win64.exe
-https://download.videolan.org/pub/videolan/vlc/last/win64/vlc-win64.exe",
-  "RustDesk": "::notice::[RustDesk] resolved -> https://github.com/rustdesk/rustdesk/releases/download/1.4.9/rustdesk-1.4.9-x86_64.exe
-https://github.com/rustdesk/rustdesk/releases/download/1.4.9/rustdesk-1.4.9-x86_64.exe",
-  "Ultraviewer": "::warning::[Ultraviewer] could not be resolved (page/URL likely changed) — skipping, will use empty URL",
-  "AdobeReader": "::notice::[AdobeReader] resolved -> https://get.adobe.com/reader/download/?installer=Reader_DC_2024_006_20034_for_Windows&os=Windows%208.1%2FServer%202012&stype=7961&stype2=8688&sfsurvey=false&nativeapi=1
-https://get.adobe.com/reader/download/?installer=Reader_DC_2024_006_20034_for_Windows&os=Windows%208.1%2FServer%202012&stype=7961&stype2=8688&sfsurvey=false&nativeapi=1",
-  "WindowsTerminal": "::notice::[WindowsTerminal] resolved -> https://github.com/microsoft/terminal/releases/download/v1.24.11911.0/Microsoft.WindowsTerminal_1.24.11911.0_8wekyb3d8bbwe.msixbundle
-https://github.com/microsoft/terminal/releases/download/v1.24.11911.0/Microsoft.WindowsTerminal_1.24.11911.0_8wekyb3d8bbwe.msixbundle",
-  "Chrome": "::notice::[Chrome] resolved -> https://dl.google.com/chrome/install/latest/chrome_installer.exe
-https://dl.google.com/chrome/install/latest/chrome_installer.exe",
-  "AnyDesk": "::notice::[AnyDesk] resolved -> https://download.anydesk.com/AnyDesk.exe
-https://download.anydesk.com/AnyDesk.exe"
+  "FreeDownloadManager": "https://www.freedownloadmanager.org/download-fdm.htm",
+  "PowerShell": "https://github.com/PowerShell/PowerShell/releases/download/v7.6.5/PowerShell-7.6.5-win-x64.msi",
+  "7Zip": "https://github.com/ip7z/7zip/releases/download/26.03/7z2603-x64.exe",
+  "WinRAR": "https://www.win-rar.com/fileadmin/winrar-versions/winrar/winrar-x64-723.exe",
+  "Firefox": "https://download-installer.cdn.mozilla.net/pub/firefox/releases/155.0.1/win64/en-US/Firefox%20Setup%20155.0.1.exe",
+  "VLC": "https://download.videolan.org/pub/videolan/vlc/last/win64/vlc-win64.exe",
+  "RustDesk": "https://github.com/rustdesk/rustdesk/releases/download/1.4.9/rustdesk-1.4.9-x86_64.exe",
+  "Ultraviewer": "",
+  "AdobeReader": "https://get.adobe.com/reader/download/?installer=Reader_DC_2024_006_20034_for_Windows&os=Windows%208.1%2FServer%202012&stype=7961&stype2=8688&sfsurvey=false&nativeapi=1",
+  "WindowsTerminal": "https://github.com/microsoft/terminal/releases/download/v1.24.11911.0/Microsoft.WindowsTerminal_1.24.11911.0_8wekyb3d8bbwe.msixbundle",
+  "Chrome": "https://dl.google.com/chrome/install/latest/chrome_installer.exe",
+  "AnyDesk": "https://download.anydesk.com/AnyDesk.exe"
 }
