@@ -1,0 +1,126 @@
+name: Resolve Installer URLs
+
+on:
+  workflow_dispatch:      # allows the endpoint script (or you manually) to trigger on demand
+  schedule:
+    - cron: '0 6 * * *'   # optional daily refresh at 06:00 UTC — remove this block if you only want on-demand runs
+
+permissions:
+  contents: write          # needed to commit installers.json back to the repo
+
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Resolve all installer URLs
+        id: resolve
+        run: |
+          # NOTE: no 'set -e' here on purpose — a single broken vendor page/URL must
+          # not abort the whole run. Every app is resolved independently below.
+
+          # ---- helpers -------------------------------------------------------
+          resolve_static() {
+            echo "$1"
+          }
+
+          resolve_redirect() {
+            curl -sf -o /dev/null -w '%{url_effective}' -L --max-time 15 "$1"
+          }
+
+          resolve_github() {
+            curl -sf --max-time 15 "https://api.github.com/repos/$1/releases/latest" \
+              | grep -oP '"browser_download_url":\s*"\K[^"]+' \
+              | grep -E "$2" \
+              | head -n1
+          }
+
+          resolve_scrape() {
+            curl -sf --max-time 15 "$1" | grep -oP "$2" | head -n1
+          }
+
+          # Wraps any resolver: catches failures/timeouts, and rejects empty or
+          # non-URL results so a broken page never silently becomes garbage output.
+          # On failure, prints nothing (empty string) and logs a warning to the job log.
+          safe_resolve() {
+            local app_name="$1"; shift
+            local result=""
+            result=$("$@" 2>/dev/null) || true
+            if [[ "$result" =~ ^https?:// ]]; then
+              echo "::notice::[$app_name] resolved -> $result"
+              echo "$result"
+            else
+              echo "::warning::[$app_name] could not be resolved (page/URL likely changed) — skipping, will use empty URL"
+              echo ""
+            fi
+          }
+          # ---------------------------------------------------------------------
+
+          declare -A URLS
+
+          URLS[VLC]=$(safe_resolve "VLC" resolve_static "https://download.videolan.org/pub/videolan/vlc/last/win64/vlc-win64.exe")
+
+          URLS[WinRAR]=$(safe_resolve "WinRAR" resolve_scrape "https://www.rarlab.com/download.htm" 'https://www\.rarlab\.com/rar/winrar-x64-[0-9a-z]+\.exe')
+
+          URLS[FreeDownloadManager]=$(safe_resolve "FreeDownloadManager" resolve_redirect "https://www.freedownloadmanager.org/download-fdm.htm")
+
+          # 7-Zip's download page uses relative links (e.g. href="7z2301-x64.exe") — needs a
+          # two-step extract, so it isn't a plain safe_resolve one-liner. Wrapped by hand below.
+          SEVENZIP_REL=$(curl -sf --max-time 15 "https://www.7-zip.org/download.html" | grep -oP 'href="\K7z[0-9]+-x64\.exe(?=")' | head -n1) || true
+          if [[ -n "$SEVENZIP_REL" ]]; then
+            URLS[7Zip]="https://www.7-zip.org/$SEVENZIP_REL"
+            echo "::notice::[7Zip] resolved -> ${URLS[7Zip]}"
+          else
+            URLS[7Zip]=""
+            echo "::warning::[7Zip] could not be resolved (page/URL likely changed) — skipping, will use empty URL"
+          fi
+
+          URLS[Chrome]=$(safe_resolve "Chrome" resolve_static "https://dl.google.com/chrome/install/latest/chrome_installer.exe")
+
+          URLS[Firefox]=$(safe_resolve "Firefox" resolve_redirect "https://download.mozilla.org/?product=firefox-latest&os=win64&lang=en-US")
+
+          URLS[AnyDesk]=$(safe_resolve "AnyDesk" resolve_static "https://download.anydesk.com/AnyDesk.exe")
+
+          URLS[Ultraviewer]=$(safe_resolve "Ultraviewer" resolve_scrape "https://www.ultraviewer.net/en/download" 'https://[^"]+UltraViewer_setup[^"]+\.exe')
+
+          URLS[RustDesk]=$(safe_resolve "RustDesk" resolve_github "rustdesk/rustdesk" 'x86_64\.exe$')
+
+          URLS[AdobeReader]=$(safe_resolve "AdobeReader" resolve_redirect "https://get.adobe.com/reader/download/?installer=Reader_DC_2024_006_20034_for_Windows&os=Windows%208.1%2FServer%202012&stype=7961&stype2=8688&sfsurvey=false&nativeapi=1")
+
+          URLS[WindowsTerminal]=$(safe_resolve "WindowsTerminal" resolve_github "microsoft/terminal" '\.msixbundle$')
+
+          URLS[PowerShell]=$(safe_resolve "PowerShell" resolve_github "PowerShell/PowerShell" 'win-x64\.msi$')
+
+          # ---- write JSON ---------------------------------------------------
+          {
+            echo "{"
+            first=true
+            for key in "${!URLS[@]}"; do
+              if [ "$first" = true ]; then first=false; else echo ","; fi
+              printf '  "%s": "%s"' "$key" "${URLS[$key]}"
+            done
+            echo ""
+            echo "}"
+          } > installers.json
+
+          echo "---- resolved installers.json ----"
+          cat installers.json
+
+          echo "---- summary ----"
+          for key in "${!URLS[@]}"; do
+            if [[ -z "${URLS[$key]}" ]]; then
+              echo "FAILED:  $key"
+            else
+              echo "OK:      $key"
+            fi
+          done
+
+      - name: Commit and push installers.json
+        run: |
+          git config user.name "installer-resolver-bot"
+          git config user.email "installer-resolver-bot@users.noreply.github.com"
+          git add installers.json
+          git diff --cached --quiet && echo "No changes to commit" || git commit -m "Update resolved installer URLs [skip ci]"
+          git push
