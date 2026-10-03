@@ -8,7 +8,7 @@
   "RustDesk": "https://github.com/rustdesk/rustdesk/releases/download/1.5.0/rustdesk-1.5.0-x86_64.exe",
   "Ultraviewer": "",
   "AdobeReader": "https://get.adobe.com/reader/download/?installer=Reader_DC_2024_006_20034_for_Windows&os=Windows%208.1%2FServer%202012&stype=7961&stype2=8688&sfsurvey=false&nativeapi=1",
-  "WindowsTerminal": "https://github.com/microsoft/terminal/releases/download/v1.24.11911.0/Microsoft.WindowsTerminal_1.24.11911.0_8wekyb3d8bbwe.msixbundle",
+  "WindowsTerminal": "https://github.com/microsoft/terminal/releases/download/v1.25.2733.0/Microsoft.WindowsTerminal_1.25.2733.0_8wekyb3d8bbwe.msixbundle",
   "Chrome": "https://dl.google.com/chrome/install/latest/chrome_installer.exe",
   "AnyDesk": "https://download.anydesk.com/AnyDesk.exe"
 }
